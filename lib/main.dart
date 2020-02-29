@@ -29,7 +29,6 @@ class Dashboard {
       image: "http://10.10851.133/PHP/ipann"+jsonData['image']
     );
   }
-
 }
 
 class CostumListView extends StatelessWidget {
@@ -71,22 +70,6 @@ class CostumListView extends StatelessWidget {
                   Text(" | "),
                   Padding(
                       child: Text(
-                        dashboard.tempat,
-                        style: new TextStyle(fontStyle: FontStyle.italic),
-                        textAlign: TextAlign.right,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                  Text(" | "),
-                  Padding(
-                      child: Text(
-                        dashboard.jadwal,
-                        style: new TextStyle(fontStyle: FontStyle.italic),
-                        textAlign: TextAlign.right,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                  Text(" | "),
-                  Padding(
-                      child: Text(
                         dashboard.deskripsi,
                         style: new TextStyle(fontStyle: FontStyle.italic),
                         textAlign: TextAlign.right,
@@ -107,6 +90,21 @@ class CostumListView extends StatelessWidget {
     );
   }
 
+}
+
+Future<List<Dashboard>> downloadJSON() async {
+  final jsonEndpoint =
+      "http://10.108.48.216/ipannnnn";
+
+  final response = await get(jsonEndpoint);
+
+  if (response.statusCode == 200) {
+    List dashboards = json.decode(response.body);
+    return dashboards
+        .map((dashboard) => new Dashboard.fromJson(dashboard))
+        .toList();
+  } else
+    throw Exception('We were not able to successfully download the json data.');
 }
 
 class SecondScreen extends StatefulWidget {
@@ -213,21 +211,6 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<List<Dashboard>> downloadJSON() async {
-  final jsonEndpoint =
-      "http://10.10851.133/PHP/ipann";
-
-  final response = await get(jsonEndpoint);
-
-  if (response.statusCode == 200) {
-    List dashboard = json.decode(response.body);
-    return dashboard
-        .map((dashboard) => new Dashboard.fromJson(dashboard))
-        .toList();
-  } else
-    throw Exception('We were not able to successfully download the json data.');
 }
 
 void main() {
