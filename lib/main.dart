@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' show get;
 import 'dart:convert';
 
-
 class Dashboard {
-  
-  final int id;
-  final String nama_acara, tempat, deskripsi, image, jadwal;
+  final String id;
+  final String acara, tempat, deskripsi, image, jadwal;
 
   Dashboard({
     this.id,
-    this.nama_acara,
+    this.acara,
     this.tempat,
     this.jadwal,
     this.deskripsi,
@@ -22,25 +20,25 @@ class Dashboard {
   factory Dashboard.fromJson(Map<String, dynamic> jsonData){
     return Dashboard(
       id: jsonData['id'],
-      nama_acara: jsonData['nama_acara'],
+      acara: jsonData['acara'],
       jadwal: jsonData['jadwal'],
       tempat: jsonData['tempat'],
       deskripsi: jsonData['deskripsi'],
-      image: "http://10.10851.133/PHP/ipann"+jsonData['image']
+      image: "https://or.neotelemetri.com/pict"+jsonData['image']
     );
   }
 }
 
 class CostumListView extends StatelessWidget {
-  final List<Dashboard> dashboard;
+  final List<Dashboard> dashboards;
 
-  CostumListView(this.dashboard);
+  CostumListView(this.dashboards);
 
   Widget build (context){
     return ListView.builder(
-      itemCount: dashboard.length,
+      itemCount: dashboards.length,
       itemBuilder: (context, int currentIndex){
-      return createViewItem(dashboard[currentIndex], context);
+      return createViewItem(dashboards[currentIndex], context);
       },
     );
   }
@@ -55,23 +53,11 @@ class CostumListView extends StatelessWidget {
             margin: EdgeInsets.all(20.0),
             child: Column(
               children: <Widget>[
-                Padding(
-                  child: Image.network(dashboard.image),
-                  padding: EdgeInsets.only(bottom: 8.0),
-                ),
                 Row(children: <Widget>[
                   Padding(
                       child: Text(
-                        dashboard.nama_acara,
+                        dashboard.acara,
                         style: new TextStyle(fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.right,
-                      ),
-                      padding: EdgeInsets.all(1.0)),
-                  Text(" | "),
-                  Padding(
-                      child: Text(
-                        dashboard.deskripsi,
-                        style: new TextStyle(fontStyle: FontStyle.italic),
                         textAlign: TextAlign.right,
                       ),
                       padding: EdgeInsets.all(1.0)),
@@ -94,7 +80,7 @@ class CostumListView extends StatelessWidget {
 
 Future<List<Dashboard>> downloadJSON() async {
   final jsonEndpoint =
-      "http://10.108.48.216/ipannnnn";
+      "https://or.neotelemetri.com/view/dashboard.php";
 
   final response = await get(jsonEndpoint);
 
@@ -127,7 +113,7 @@ class _SecondScreenState extends State<SecondScreen> {
             children: <Widget>[
               Padding(
                 child: new Text(
-                  'SPACECRAFT DETAILS',
+                  'DETAILS ACARA',
                   style: new TextStyle(fontWeight: FontWeight.bold,fontSize: 20.0),
                   textAlign: TextAlign.center,
                 ),
@@ -141,7 +127,7 @@ class _SecondScreenState extends State<SecondScreen> {
               ),
               Padding(
                 child: new Text(
-                  'NAME : ${widget.value.nama_acara}',
+                  'ACARA : ${widget.value.acara}',
                   style: new TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -149,7 +135,7 @@ class _SecondScreenState extends State<SecondScreen> {
               ),
               Padding(
                 child: new Text(
-                  'NAME : ${widget.value.jadwal}',
+                  'JADWAL : ${widget.value.jadwal}',
                   style: new TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -157,7 +143,7 @@ class _SecondScreenState extends State<SecondScreen> {
               ),
               Padding(
                 child: new Text(
-                  'PROPELLANT : ${widget.value.tempat}',
+                  'TEMPAT : ${widget.value.tempat}',
                   style: new TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -165,7 +151,7 @@ class _SecondScreenState extends State<SecondScreen> {
               ),
               Padding(
                 child: new Text(
-                  'NAME : ${widget.value.deskripsi}',
+                  'DESKRIPSI : ${widget.value.deskripsi}',
                   style: new TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.left,
                 ),
@@ -186,7 +172,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepOrange,
       ),
       home: new Scaffold(
-        appBar: new AppBar(title: const Text('MySQL Images Text')),
+        appBar: new AppBar(title: const Text('Dashboard')),
         body: new Center(
           //FutureBuilder is a widget that builds itself based on the latest snapshot
           // of interaction with a Future.
@@ -197,8 +183,8 @@ class MyApp extends StatelessWidget {
             //an asynchronous computation.
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<Dashboard> dashboard = snapshot.data;
-                return new CostumListView(dashboard);
+                List<Dashboard> dashboards = snapshot.data;
+                return new CostumListView(dashboards);
               } else if (snapshot.hasError) {
                 return Text('${snapshot.error}');
               }
